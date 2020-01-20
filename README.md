@@ -21,3 +21,7 @@ And set
     ZSH_THEME="eckig/eckig"
 
 in your `.zshrc`.
+
+## Meaning
+
+eckig German adjective: "edgy"
