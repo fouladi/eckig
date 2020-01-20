@@ -1,6 +1,10 @@
 # eckig
 A minimal zsh prompt theme
 
+# Screenshot
+
+![alt text](screenshot.png)
+
 # Installation
 
 Clone the repository into your custom `oh-my-zsh` themes directory:
