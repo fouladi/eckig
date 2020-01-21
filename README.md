@@ -1,5 +1,6 @@
 # eckig
-A minimal zsh prompt theme
+
+A Zsh prompt theme with edgy UTF-8 icons
 
 # Screenshot
 
@@ -15,9 +16,9 @@ Make a symbolic link `eckig.zsh-theme` to your `oh-my-zsh` themes
 directory:
 
     # ln -s "$ZSH_CUSTOM/themes/eckig/eckig.zsh-theme" "$ZSH_CUSTOM/themes/eckig.zsh-theme"
-    
-And set 
-    
+
+And set
+
     ZSH_THEME="eckig/eckig"
 
 in your `.zshrc`.
