@@ -14,6 +14,7 @@ fi
 
 local current_dir='%{$terminfo[bold]$fg[yellow]%}%~%{$reset_color%}'
 local git_branch='$(git_prompt_info)%{$reset_color%}'
+local bg_job='$(job_status)%{$reset_color%}'
 
 function git_prompt_info() {
   ref=$(git symbolic-ref HEAD 2> /dev/null) || return
@@ -43,8 +44,14 @@ function git_prompt_info() {
   echo "$GIT_PROMPT_COLOR$ZSH_THEME_GIT_PROMPT_PREFIX$(current_branch)$GIT_DIRTY_STAR$ZSH_THEME_GIT_PROMPT_SUFFIX"
 }
 
+fuction job_status() {
+  if [[ $(jobs -l | wc -l) -gt 0 ]]; then
+    echo "⬙"
+  fi
+}
+
 PROMPT="
-╭─${user_host} ${current_dir} ${git_branch}
+╭─${bg_job} ${user_host} ${current_dir} ${git_branch}
 ╰─%B${user_symbol}%b "
 RPS1="%B${return_code}%b"
 
