@@ -2,6 +2,12 @@
 # ╭─user@host ~/.oh-my-zsh ⟦master▴⟧
 # ╰─◼
 
+# refresh clock in prompt every 10 sec
+TMOUT=10
+TRAPALRM() {
+  zle reset-prompt
+}
+
 local return_code="%(?..%F{red}%? ◩%f)"
 
 if [[ $UID -eq 0 ]]; then
@@ -12,6 +18,7 @@ else
     local user_symbol='◼ '
 fi
 
+local current_time='⟦%D{%L:%M}⟧'  # add :%S if you want seconds too
 local current_dir='%{$terminfo[bold]$fg[yellow]%}%~%{$reset_color%}'
 local git_branch='$(git_prompt_info)%{$reset_color%}'
 local bg_job='$(job_status)%{$reset_color%}'
@@ -51,7 +58,7 @@ fuction job_status() {
 }
 
 PROMPT="
-╭─${bg_job} ${user_host} ${current_dir} ${git_branch}
+╭─${bg_job} ${current_time} ${user_host} ${current_dir} ${git_branch}
 ╰─%B${user_symbol}%b "
 RPS1="%B${return_code}%b"
 
