@@ -1,6 +1,9 @@
-# ZSH Theme - Modified from bira and half-life
+# ZSH Theme - some ideas "shamelessly" stolen from 'bira' and 'half-life'
+#
 # ╭─⟦3:24⟧ user@host ~/.oh-my-zsh ⟦master▴⟧
 # ╰─◼
+#
+#  Version: 2.1
 
 # refresh clock in prompt every 10 sec
 TMOUT=10
@@ -13,7 +16,7 @@ setopt prompt_subst
 autoload -U add-zsh-hook
 autoload -Uz vcs_info
 
-#use extended color palette if available
+# use extended color palette if available
 if [[ $TERM = *256color* || $TERM = *rxvt* ]]; then
     snowwhite="%F{250}"
     turquoise="%F{81}"
@@ -37,8 +40,8 @@ fi
 # enable VCS systems you use
 zstyle ':vcs_info:*' enable git
 
-# check-for-changes can be really slow.
-# you should disable it, if you work with large repositories
+# check-for-changes can be really slow. You should disable it, if you
+# work with large repositories
 zstyle ':vcs_info:*:prompt:*' check-for-changes true
 
 # set formats
@@ -60,8 +63,9 @@ zstyle ':vcs_info:*:prompt:*' actionformats "${FMT_BRANCH}${FMT_ACTION}"
 zstyle ':vcs_info:*:prompt:*' formats       "${FMT_BRANCH}"
 zstyle ':vcs_info:*:prompt:*' nvcsformats   ""
 
-function farr_precmd {
-    # check for untracked files or updated submodules, since vcs_info doesn't
+function untrack_precmd {
+    # check for untracked files or updated submodules, since
+    # 'vcs_info' does not do
     if [[ ! -z $(git ls-files --other --exclude-standard 2> /dev/null) ]]; then
         FMT_BRANCH="${CLR_RST}⟦%{$limegreen%}%b%u%c%{$hotpink%} ▴${CLR_RST}⟧"
     else
@@ -71,7 +75,7 @@ function farr_precmd {
 
     vcs_info 'prompt'
 }
-add-zsh-hook precmd farr_precmd
+add-zsh-hook precmd untrack_precmd
 
 if [[ $UID -eq 0 ]]; then
     local user_host='%{$terminfo[bold]%{$hotpink%}%}%n@%m%{$reset_color%}'
@@ -82,7 +86,7 @@ else
 fi
 
 local return_code="%(?..%{$hotpink%}%? ◩%f)"
-local current_time='⟦%D{%L:%M}⟧%{$reset_color%}'  # add :%S if you want seconds too
+local current_time='⟦%D{%L:%M}⟧%{$reset_color%}'  # add :%S if you want to see seconds too
 local current_dir='%{$terminfo[bold]%{$brown%}%}%~%{$reset_color%}'
 local git_branch='$vcs_info_msg_0_%{$reset_color%}'
 local bg_job='$(job_status)%{$reset_color%}'
