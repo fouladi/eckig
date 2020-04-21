@@ -48,9 +48,9 @@ zstyle ':vcs_info:*:prompt:*' check-for-changes true
 # %a - action (e.g. rebase-i)
 # %R - repository path
 # %S - path in the repository
-PR_RST="%{${reset_color}%}"
-FMT_BRANCH=" on %{$limegreen%}%b%u%c${PR_RST}"
-FMT_ACTION=" performing a %{$limegreen%}%a${PR_RST}"
+CLR_RST="%{${reset_color}%}"
+FMT_BRANCH=" on %{$limegreen%}%b%u%c${CLR_RST}"
+FMT_ACTION=" performing a %{$limegreen%}%a${CLR_RST}"
 FMT_UNSTAGED="%{$orange%} ▴"
 FMT_STAGED="%{$limegreen%} ▴"
 
@@ -63,9 +63,9 @@ zstyle ':vcs_info:*:prompt:*' nvcsformats   ""
 function farr_precmd {
     # check for untracked files or updated submodules, since vcs_info doesn't
     if [[ ! -z $(git ls-files --other --exclude-standard 2> /dev/null) ]]; then
-        FMT_BRANCH="${PM_RST}⟦%{$limegreen%}%b%u%c%{$hotpink%} ▴${PR_RST}⟧"
+        FMT_BRANCH="${CLR_RST}⟦%{$limegreen%}%b%u%c%{$hotpink%} ▴${CLR_RST}⟧"
     else
-        FMT_BRANCH="${PM_RST}⟦%{$limegreen%}%b%u%c${PR_RST}⟧"
+        FMT_BRANCH="${CLR_RST}⟦%{$limegreen%}%b%u%c${CLR_RST}⟧"
     fi
     zstyle ':vcs_info:*:prompt:*' formats       "${FMT_BRANCH}"
 
