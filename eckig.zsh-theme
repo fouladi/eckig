@@ -8,8 +8,6 @@ TRAPALRM() {
   zle reset-prompt
 }
 
-PR_GIT_UPDATE=1
-
 setopt prompt_subst
 
 autoload -U add-zsh-hook
@@ -62,32 +60,18 @@ zstyle ':vcs_info:*:prompt:*' actionformats "${FMT_BRANCH}${FMT_ACTION}"
 zstyle ':vcs_info:*:prompt:*' formats       "${FMT_BRANCH}"
 zstyle ':vcs_info:*:prompt:*' nvcsformats   ""
 
-function steeef_preexec {
-    PR_GIT_UPDATE=1
-}
-add-zsh-hook preexec steeef_preexec
-
-function steeef_chpwd {
-    PR_GIT_UPDATE=1
-}
-add-zsh-hook chpwd steeef_chpwd
-
-function steeef_precmd {
-    if [[ -n "$PR_GIT_UPDATE" ]] ; then
-        # check for untracked files or updated submodules, since vcs_info doesn't
-        if [[ ! -z $(git ls-files --other --exclude-standard 2> /dev/null) ]]; then
-            PR_GIT_UPDATE=1
-            FMT_BRANCH="${PM_RST}⟦%{$limegreen%}%b%u%c%{$hotpink%} ▴${PR_RST}⟧"
-        else
-            FMT_BRANCH="${PM_RST}⟦%{$limegreen%}%b%u%c${PR_RST}⟧"
-        fi
-        zstyle ':vcs_info:*:prompt:*' formats       "${FMT_BRANCH}"
-
-        vcs_info 'prompt'
-        PR_GIT_UPDATE=
+function farr_precmd {
+    # check for untracked files or updated submodules, since vcs_info doesn't
+    if [[ ! -z $(git ls-files --other --exclude-standard 2> /dev/null) ]]; then
+        FMT_BRANCH="${PM_RST}⟦%{$limegreen%}%b%u%c%{$hotpink%} ▴${PR_RST}⟧"
+    else
+        FMT_BRANCH="${PM_RST}⟦%{$limegreen%}%b%u%c${PR_RST}⟧"
     fi
+    zstyle ':vcs_info:*:prompt:*' formats       "${FMT_BRANCH}"
+
+    vcs_info 'prompt'
 }
-add-zsh-hook precmd steeef_precmd
+add-zsh-hook precmd farr_precmd
 
 if [[ $UID -eq 0 ]]; then
     local user_host='%{$terminfo[bold]%{$hotpink%}%}%n@%m%{$reset_color%}'
