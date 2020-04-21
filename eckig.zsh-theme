@@ -1,6 +1,9 @@
 # ZSH Theme - Modified from bira.zsh-theme
+#
 # ╭─user@host ~/.oh-my-zsh ⟦master▴⟧
 # ╰─◼
+#
+# Version: 1.2
 
 # refresh clock in prompt every 10 sec
 TMOUT=10
