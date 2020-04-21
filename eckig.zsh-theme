@@ -89,9 +89,15 @@ function steeef_precmd {
 }
 add-zsh-hook precmd steeef_precmd
 
-local return_code="%(?..%{$hotpink%} ◩%f)"
-local user_host='%{$terminfo[bold]%{$grey%}%}%n@%m%{$reset_color%}'
-local user_symbol='%{$snowwhite%}◼ %{$reset_color%}'
+if [[ $UID -eq 0 ]]; then
+    local user_host='%{$terminfo[bold]%{$hotpink%}%}%n@%m%{$reset_color%}'
+    local user_symbol='%{$snowwhite%}➤ %{$reset_color%}'
+else
+    local user_host='%{$terminfo[bold]%{$grey%}%}%n@%m%{$reset_color%}'
+    local user_symbol='%{$snowwhite%}◼ %{$reset_color%}'
+fi
+
+local return_code="%(?..%{$hotpink%}%? ◩%f)"
 local current_time='⟦%D{%L:%M}⟧%{$reset_color%}'  # add :%S if you want seconds too
 local current_dir='%{$terminfo[bold]%{$brown%}%}%~%{$reset_color%}'
 local git_branch='$vcs_info_msg_0_%{$reset_color%}'
