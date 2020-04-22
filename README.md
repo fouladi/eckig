@@ -1,6 +1,6 @@
 # eckig
 
-A Zsh prompt theme with edgy UTF-8 icons
+A Zsh prompt theme with edgy UTF-8 icons and a clock
 
 # Screenshot
 

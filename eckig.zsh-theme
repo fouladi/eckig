@@ -1,9 +1,9 @@
-# ZSH Theme - Modified from bira.zsh-theme
+# ZSH Theme - some ideas "shamelessly" stolen from 'bira' and 'half-life'
 #
-# ╭─user@host ~/.oh-my-zsh ⟦master▴⟧
+# ╭─⟦3:24⟧ user@host ~/.oh-my-zsh ⟦master▴⟧
 # ╰─◼
 #
-# Version: 1.2
+#  Version: 2.1
 
 # refresh clock in prompt every 10 sec
 TMOUT=10
@@ -11,48 +11,85 @@ TRAPALRM() {
   zle reset-prompt
 }
 
-local return_code="%(?..%F{red}%? ◩%f)"
+setopt prompt_subst
 
-if [[ $UID -eq 0 ]]; then
-    local user_host='%{$terminfo[bold]$fg[red]%}%n@%m%{$reset_color%}'
-    local user_symbol='➤ '
+autoload -U add-zsh-hook
+autoload -Uz vcs_info
+
+# use extended color palette if available
+if [[ $TERM = *256color* || $TERM = *rxvt* ]]; then
+    snowwhite="%F{250}"
+    turquoise="%F{81}"
+    orange="%F{166}"
+    brown="%F{215}"
+    purple="%F{135}"
+    hotpink="%F{161}"
+    limegreen="%F{118}"
+    grey="%F{241}"
 else
-    local user_host='%{$terminfo[bold]$fg[cyan]%}%n@%m%{$reset_color%}'
-    local user_symbol='◼ '
+    snowwhite="$fg[white]"
+    turquoise="$fg[cyan]"
+    orange="$fg[yellow]"
+    brown="$fg[yellow]"
+    purple="$fg[magenta]"
+    hotpink="$fg[red]"
+    limegreen="$fg[green]"
+    grey="$fg[black]"
 fi
 
-local current_time='⟦%D{%L:%M}⟧'  # add :%S if you want seconds too
-local current_dir='%{$terminfo[bold]$fg[yellow]%}%~%{$reset_color%}'
-local git_branch='$(git_prompt_info)%{$reset_color%}'
-local bg_job='$(job_status)%{$reset_color%}'
+# enable VCS systems you use
+zstyle ':vcs_info:*' enable git
 
-function git_prompt_info() {
-  ref=$(git symbolic-ref HEAD 2> /dev/null) || return
+# check-for-changes can be really slow. You should disable it, if you
+# work with large repositories
+zstyle ':vcs_info:*:prompt:*' check-for-changes true
 
-  # Checks if working tree is dirty
-  local STATUS=''
-  local FLAGS
-  FLAGS=('--porcelain')
-  if [[ "$(command git config --get oh-my-zsh.hide-dirty)" != "1" ]]; then
-    if [[ $POST_1_7_2_GIT -gt 0 ]]; then
-      FLAGS+='--ignore-submodules=dirty'
+# set formats
+# %b - branchname
+# %u - unstagedstr (see below)
+# %c - stagedstr (see below)
+# %a - action (e.g. rebase-i)
+# %R - repository path
+# %S - path in the repository
+CLR_RST="%{${reset_color}%}"
+FMT_BRANCH=" on %{$limegreen%}%b%u%c${CLR_RST}"
+FMT_ACTION=" performing a %{$limegreen%}%a${CLR_RST}"
+FMT_UNSTAGED="%{$orange%} ▴"
+FMT_STAGED="%{$limegreen%} ▴"
+
+zstyle ':vcs_info:*:prompt:*' unstagedstr   "${FMT_UNSTAGED}"
+zstyle ':vcs_info:*:prompt:*' stagedstr     "${FMT_STAGED}"
+zstyle ':vcs_info:*:prompt:*' actionformats "${FMT_BRANCH}${FMT_ACTION}"
+zstyle ':vcs_info:*:prompt:*' formats       "${FMT_BRANCH}"
+zstyle ':vcs_info:*:prompt:*' nvcsformats   ""
+
+function untrack_precmd {
+    # check for untracked files or updated submodules, since
+    # 'vcs_info' does not do
+    if [[ ! -z $(git ls-files --other --exclude-standard 2> /dev/null) ]]; then
+        FMT_BRANCH="${CLR_RST}⟦%{$limegreen%}%b%u%c%{$hotpink%} ▴${CLR_RST}⟧"
+    else
+        FMT_BRANCH="${CLR_RST}⟦%{$limegreen%}%b%u%c${CLR_RST}⟧"
     fi
-    if [[ "$DISABLE_UNTRACKED_FILES_DIRTY" == "true" ]]; then
-      FLAGS+='--untracked-files=no'
-    fi
-    STATUS=$(command git status ${FLAGS} 2> /dev/null | tail -n1)
-  fi
+    zstyle ':vcs_info:*:prompt:*' formats       "${FMT_BRANCH}"
 
-  if [[ -n $STATUS ]]; then
-    GIT_PROMPT_COLOR="$ZSH_THEME_GIT_PROMPT_DIRTY"
-    GIT_DIRTY_STAR="▴"
-  else
-    GIT_PROMPT_COLOR="$ZSH_THEME_GIT_PROMPT_CLEAN"
-    unset GIT_DIRTY_STAR
-  fi
-
-  echo "$GIT_PROMPT_COLOR$ZSH_THEME_GIT_PROMPT_PREFIX$(current_branch)$GIT_DIRTY_STAR$ZSH_THEME_GIT_PROMPT_SUFFIX"
+    vcs_info 'prompt'
 }
+add-zsh-hook precmd untrack_precmd
+
+if [[ $UID -eq 0 ]]; then
+    local user_host='%{$terminfo[bold]%{$hotpink%}%}%n@%m%{$reset_color%}'
+    local user_symbol='%{$snowwhite%}➤ %{$reset_color%}'
+else
+    local user_host='%{$terminfo[bold]%{$grey%}%}%n@%m%{$reset_color%}'
+    local user_symbol='%{$snowwhite%}◼ %{$reset_color%}'
+fi
+
+local return_code="%(?..%{$hotpink%}%? ◩%f)"
+local current_time='⟦%D{%L:%M}⟧%{$reset_color%}'  # add :%S if you want to see seconds too
+local current_dir='%{$terminfo[bold]%{$brown%}%}%~%{$reset_color%}'
+local git_branch='$vcs_info_msg_0_%{$reset_color%}'
+local bg_job='$(job_status)%{$reset_color%}'
 
 fuction job_status() {
   if [[ $(jobs -l | wc -l) -gt 0 ]]; then
@@ -62,11 +99,5 @@ fuction job_status() {
 
 PROMPT="
 ╭─${bg_job} ${current_time} ${user_host} ${current_dir} ${git_branch}
-╰─%B${user_symbol}%b "
+╰─%B${user_symbol}%b$snowwhite "
 RPS1="%B${return_code}%b"
-
-
-ZSH_THEME_GIT_PROMPT_PREFIX="⟦"
-ZSH_THEME_GIT_PROMPT_SUFFIX="⟧$reset_color"
-ZSH_THEME_GIT_PROMPT_DIRTY="$fg[red]"
-ZSH_THEME_GIT_PROMPT_CLEAN="$fg[green]"
