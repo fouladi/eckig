@@ -1,4 +1,5 @@
-# ZSH Theme - some ideas "shamelessly" stolen from 'bira' and 'half-life'
+# ZSH Theme - some ideas "shamelessly" laid out from 'bira' and
+# 'half-life'
 #
 # ╭─⟦3:24⟧ user@host ~/.oh-my-zsh ⟦master▴⟧
 # ╰─◼
@@ -52,8 +53,8 @@ zstyle ':vcs_info:*:prompt:*' check-for-changes true
 # %R - repository path
 # %S - path in the repository
 CLR_RST="%{${reset_color}%}"
-FMT_BRANCH=" on %{$limegreen%}%b%u%c${CLR_RST}"
-FMT_ACTION=" performing a %{$limegreen%}%a${CLR_RST}"
+FMT_BRANCH="⟦⭃ on %{$limegreen%}%b%u%c${CLR_RST}"
+FMT_ACTION=" performing a %{$limegreen%}%a${CLR_RST}⟧"
 FMT_UNSTAGED="%{$orange%} ▴"
 FMT_STAGED="%{$limegreen%} ▴"
 
